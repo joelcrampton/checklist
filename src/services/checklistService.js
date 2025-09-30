@@ -10,7 +10,11 @@ export async function createItem(data) {
 
 export async function updateItem(id, data) {
   return await ChecklistItem.findByIdAndUpdate(id, data, {
-    new: true,
-    runValidators: true
+    new: true, // Return the modified document
+    runValidators: true // Validate the update operation against the model's schema
   });
+}
+
+export async function deleteItem(id) {
+  return await ChecklistItem.findByIdAndDelete(id);
 }

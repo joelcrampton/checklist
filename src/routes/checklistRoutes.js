@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getItem, createItem, updateItem } from '../services/checklistService.js';
+import ChecklistItem from '../models/checklistItem.js';
 
 const router = Router();
 
@@ -7,7 +7,7 @@ const router = Router();
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const item = await getItem(id);
+    const item = await ChecklistItem.findById(id);
     // 404 Not Found
     if (!item) {
       return res.status(404).json({
@@ -29,12 +29,8 @@ router.get('/:id', async (req, res) => {
 // POST endpoint to create an item.
 router.post('/', async (req, res) => {
   try {
-    const { text, quantity, price } = req.body;
-    const item = await createItem({
-      text,
-      quantity,
-      price,
-    });
+    const data = { text, quantity, price } = req.body;
+    const item = await ChecklistItem.create(data);
     // 201 Created
     res.status(201).json(item);
   } catch (error) {
@@ -66,11 +62,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { text, quantity, price } = req.body;
-    const item = await updateItem(id, {
-      text,
-      quantity,
-      price,
+    const data = { text, quantity, price } = req.body;
+    const item = await ChecklistItem.findByIdAndUpdate(id, data, {
+      new: true, // Return the modified document
+      runValidators: true // Validate the update operation against the model's schema
     });
     // 404 Not Found
     if (!item) {
@@ -96,6 +91,29 @@ router.put('/:id', async (req, res) => {
         error_description: error.message
       });
     }
+  }
+});
+
+// DELETE endpoint to delete an item.
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await ChecklistItem.findByIdAndDelete(id);
+    // 404 Not Found
+    if (!item) {
+      return res.status(404).json({
+        error: 'Not Found',
+        error_description: `Item with ID ${id} not found`,
+      });
+    }
+    // 200 OK
+    res.json(item);
+  } catch (error) {
+    // 500 Internal Server Error
+    res.status(500).json({
+      error: 'Internal Server Error',
+      error_description: error.message
+    });
   }
 });
 
