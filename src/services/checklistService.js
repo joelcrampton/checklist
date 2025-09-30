@@ -7,3 +7,10 @@ export async function getItem(id) {
 export async function createItem(data) {
   return await ChecklistItem.create(data);
 }
+
+export async function updateItem(id, data) {
+  return await ChecklistItem.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true
+  });
+}

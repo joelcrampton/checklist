@@ -4,10 +4,11 @@ const ChecklistItemSchema = new mongoose.Schema({
   text: {
     type: String,
     required: true,
+    unique: true
   },
   completed: {
     type: Boolean,
-    default: false,
+    default: false
   },
   quantity: {
     type: Number,
