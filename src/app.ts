@@ -1,5 +1,5 @@
 import express from 'express';
-import checklistRouter from './routes/checklistRoutes.js';
+import checklistRouter from './routes/checklistRoutes.ts';
 
 const app = express();
 

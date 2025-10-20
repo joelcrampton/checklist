@@ -1,8 +1,12 @@
-import app from './app.js';
+import app from './app.ts';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+if (process.env.PASSWORD === undefined) {
+  throw new Error('Missing PASSWORD in .env');
+}
 
 const PORT = process.env.PORT || 3000;
 const PASSWORD = encodeURIComponent(process.env.PASSWORD);

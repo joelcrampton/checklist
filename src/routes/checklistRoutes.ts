@@ -1,26 +1,27 @@
-import { Router } from 'express';
+import express from 'express';
+import type { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import ChecklistItem from '../models/checklistItem.js';
+import ChecklistItem from '../models/checklistItem.ts';
 
-const router = Router();
+const router = express.Router();
 
 // GET endpoint to fetch all items.
-router.get('/', async (_req, res) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
     const items = await ChecklistItem.find({});
     // 200 OK
     res.json(items);
-  } catch (error) {
+  } catch (err) {
     // 500 Internal Server Error
     res.status(500).json({
       error: 'Internal Server Error',
-      error_description: error.message
+      error_description: err.message
     });
   }
 });
 
 // GET endpoint to fetch an item using a generic :id.
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     // 400 Bad Request
@@ -40,32 +41,32 @@ router.get('/:id', async (req, res) => {
     }
     // 200 OK
     res.json(item);
-  } catch (error) {
+  } catch (err) {
     // 500 Internal Server Error
     res.status(500).json({
       error: 'Internal Server Error',
-      error_description: error.message
+      error_description: err.message
     });
   }
 });
 
 // POST endpoint to create an item.
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const data = req.body;
     const item = await ChecklistItem.create(data);
     // 201 Created
     res.status(201).json(item);
-  } catch (error) {
+  } catch (err) {
     // 400 Bad Request
-    if (error.name === 'ValidationError') {
+    if (err.name === 'ValidationError') {
       res.status(400).json({
         error: 'Bad Request',
-        error_description: error.message
+        error_description: err.message
       });
     }
     // 409 Conflict
-    else if (error.code === 11000) { // DuplicateKey
+    else if (err.code === 11000) { // DuplicateKey
       res.status(409).json({
         error: 'Conflict',
         error_description: 'An item with this text already exists.'
@@ -75,14 +76,14 @@ router.post('/', async (req, res) => {
     else {
       res.status(500).json({
         error: 'Internal Server Error',
-        error_description: error.message
+        error_description: err.message
       });
     }
   }
 });
 
 // PATCH endpoint to update an item using a generic :id.
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body; // Any combination of fields
@@ -110,26 +111,26 @@ router.patch('/:id', async (req, res) => {
 
     // 200 OK
     res.json(item);
-  } catch (error) {
+  } catch (err) {
     // 400 Bad Request
-    if (error.name === 'ValidationError') {
+    if (err.name === 'ValidationError') {
       res.status(400).json({
         error: 'Bad Request',
-        error_description: error.message
+        error_description: err.message
       });
     }
     // 500 Internal Server Error
     else {
       res.status(500).json({
         error: 'Internal Server Error',
-        error_description: error.message
+        error_description: err.message
       });
     }
   }
 });
 
 // DELETE endpoint to delete an item using a generic :id.
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     // 400 Bad Request
@@ -149,11 +150,11 @@ router.delete('/:id', async (req, res) => {
     }
     // 200 OK
     res.json(item);
-  } catch (error) {
+  } catch (err) {
     // 500 Internal Server Error
     res.status(500).json({
       error: 'Internal Server Error',
-      error_description: error.message
+      error_description: err.message
     });
   }
 });
